@@ -1,0 +1,49 @@
+{
+  "name": "atthis-mysql",
+  "version": "1.0.0",
+  "description": "atthis mysql adapter plugin",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "node tasks/npm/lint.js",
+    "test": "node tasks/npm/specs.js"
+  },
+  "keywords": [
+    "atthis",
+    "database",
+    "dump",
+    "mysql"
+  ],
+  "author": {
+    "name": "720kb",
+    "email": "tech@720kb.net",
+    "url": "http://720kb.net"
+  },
+  "contributors": [
+    {
+      "name": "Dario Andrei",
+      "email": "wouldgo84@gmail.com",
+      "url": "https://github.com/wouldgo"
+    },
+    {
+      "name": "Filippo Oretti",
+      "email": "filippo.oretti@gmail.com",
+      "url": "https://github.com/45kb"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/720kb/atthis-mysql",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/720kb/atthis-mysql.git"
+  },
+  "devDependencies": {
+    "colors": "^1.0.3",
+    "eslint": "^0.17.0",
+    "glob": "^5.0.3",
+    "tape": "^3.5.0"
+  },
+  "dependencies": {
+    "atthis-cm": "^1.0.0",
+    "mysql": "^2.5.5"
+  }
+}
