@@ -17,38 +17,47 @@
         {
           'host': {
             'type': dataTypes.string,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Hostname'
           },
           'port': {
-            'type': dataTypes.number
+            'type': dataTypes.number,
+            'label': 'Port'
           },
-          'username': {
+          'user': {
             'type': dataTypes.string,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Username'
           },
           'password': {
             'type': dataTypes.password,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Password'
           },
           'ssl': {
-            'type': dataTypes.checkbox
+            'type': dataTypes.checkbox,
+            'label': 'Connect using SSL'
           }
         },
         {
           'socketPath': {
             'type': dataTypes.string,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Socket path'
           },
-          'username': {
+          'user': {
             'type': dataTypes.string,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Username'
           },
           'password': {
             'type': dataTypes.password,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Password'
           },
           'ssl': {
-            'type': dataTypes.checkbox
+            'type': dataTypes.checkbox,
+            'label': 'Connect using SSL'
           }
         }
       ],
@@ -56,15 +65,18 @@
         'ssl': {
           'keyfile': {
             'type': dataTypes.file,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Key File'
           },
           'certificate': {
             'type': dataTypes.file,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Cert File'
           },
           'ca': {
             'type': dataTypes.file,
-            'required': optionsTypes.required
+            'required': optionsTypes.required,
+            'label': 'Ca File'
           }
         }
       },
@@ -83,12 +95,12 @@
     return connectionInformations;
   };
 
-  MysqlDumper.prototype.testConnectionInformations = function testConnectionInformations(conn) {
+  MysqlDumper.prototype.testConnectionInformations = function testConnectionInformations(selectedMenu, conn) {
 
     /*{
       'host': '127.0.0.1',
       'port': 3306,
-      'username': 'antani',
+      'user': 'antani',
       'password': 'antani',
       'ssl': true,
 
@@ -98,17 +110,19 @@
     },
     {
       'socketPath': '/var/run/mysqld/socketPath.so',
-      'username': 'antani',
+      'user': 'antani',
       'password': 'antani',
       'ssl': false
     }*/
 
-    if (!conn) {
+    if (!selectedMenu ||
+      !conn) {
 
       throw 'missing connection parameters';
     }
 
-    var menusInformationsKeys = Object.keys(connectionInformations.menus)
+    var selectedConnectionInformations = connectionInformations.menus[selectedMenu]
+      , menusInformationsKeys = Object.keys(selectedConnectionInformations)
       , optionsInforationsKeys = Object.keys(connectionInformations.options)
       , menusInformationsKeysLength = menusInformationsKeys.length
       , optionsInforationsKeysLength = optionsInforationsKeys.length
