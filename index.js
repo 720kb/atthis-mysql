@@ -3,30 +3,69 @@
   'use strict';
 
   var mysql = require('mysql')
-    , dataTypes = require('atthis-cm').dataTypes
+    , atthisCm = require('atthis-cm')
+    , dataTypes = atthisCm.dataTypes
+    , optionsTypes = atthisCm.optionsTypes
     , MysqlDumper = function MysqlDumper() {
       }
     , connectionInformations = {
+      'menusNames': [
+        'Standard connection',
+        'Socket Connection'
+      ],
       'menus': [
         {
-          'host': dataTypes.string.required,
-          'port': dataTypes.number,
-          'username': dataTypes.string.required,
-          'password': dataTypes.password.required,
-          'ssl': dataTypes.checkbox
+          'host': {
+            'type': dataTypes.string,
+            'required': optionsTypes.required
+          },
+          'port': {
+            'type': dataTypes.number
+          },
+          'username': {
+            'type': dataTypes.string,
+            'required': optionsTypes.required
+          },
+          'password': {
+            'type': dataTypes.password,
+            'required': optionsTypes.required
+          },
+          'ssl': {
+            'type': dataTypes.checkbox
+          }
         },
         {
-          'socketPath': dataTypes.string.required,
-          'username': dataTypes.string.required,
-          'password': dataTypes.password.required,
-          'ssl': dataTypes.checkbox
+          'socketPath': {
+            'type': dataTypes.string,
+            'required': optionsTypes.required
+          },
+          'username': {
+            'type': dataTypes.string,
+            'required': optionsTypes.required
+          },
+          'password': {
+            'type': dataTypes.password,
+            'required': optionsTypes.required
+          },
+          'ssl': {
+            'type': dataTypes.checkbox
+          }
         }
       ],
       'options': {
         'ssl': {
-          'keyfile': dataTypes.file.required,
-          'certificate': dataTypes.file.required,
-          'ca': dataTypes.file.required
+          'keyfile': {
+            'type': dataTypes.file,
+            'required': optionsTypes.required
+          },
+          'certificate': {
+            'type': dataTypes.file,
+            'required': optionsTypes.required
+          },
+          'ca': {
+            'type': dataTypes.file,
+            'required': optionsTypes.required
+          }
         }
       },
       'defaults': {
@@ -74,6 +113,9 @@
       , menusInformationsKeysLength = menusInformationsKeys.length
       , optionsInforationsKeysLength = optionsInforationsKeys.length
       , anIndex = 0
+      , optionsKeys
+      , optionsKeysLength
+      , anOptionIndex = 0
       , aConnectionInformationsKey;
     for (; anIndex < menusInformationsKeysLength; anIndex += 1) {
 
@@ -85,8 +127,21 @@
     }
 
     for (anIndex = 0; i < optionsInforationsKeysLength; anIndex += 1) {
-      Things[i]
-    };
+
+      aConnectionInformationsKey = optionsInforationsKeys[anIndex];
+      if (conn[aConnectionInformationsKey]) {
+
+        optionsKeys = Object.keys(connectionInformations.options[aConnectionInformationsKey]);
+        optionsKeysLength = optionsKeys.length;
+        for (anOptionIndex = 0; anOptionIndex < optionsKeysLength; anOptionIndex += 1) {
+
+          if (conn[optionsKeys[anOptionIndex]] === undefined) {
+
+            throw 'option declared but not filled';
+          }
+        }
+      }
+    }
 
 
     var connection = mysql.createConnection({
