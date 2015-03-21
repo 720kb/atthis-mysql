@@ -8,82 +8,158 @@
     , optionsTypes = atthisCm.optionsTypes
     , MysqlDumper = function MysqlDumper() {
       }
+    , validateConnectionAndCreateConnection = function validateConnectionAndCreateConnection(reject, selectedMenu, conn) {
+        if (!selectedMenu ||
+          !conn) {
+
+          reject('missing connection parameters');
+        }
+
+        var selectedConnectionInformations = connectionInformations.menus[selectedMenu]
+          , menusInformationsKeys = Object.keys(selectedConnectionInformations)
+          , optionsInforationsKeys = Object.keys(connectionInformations.options)
+          , menusInformationsKeysLength = menusInformationsKeys.length
+          , optionsInforationsKeysLength = optionsInforationsKeys.length
+          , anIndex = 0
+          , optionsKeys
+          , optionsKeysLength
+          , anOptionIndex = 0
+          , aConnectionInformationsKey
+          , toConnectionUsage
+          , connection;
+        for (; anIndex < menusInformationsKeysLength; anIndex += 1) {
+
+          aConnectionInformationsKey = menusInformationsKeys[anIndex];
+          if (conn[aConnectionInformationsKey] === undefined) {
+
+            reject('a required parameter is missing ' + aConnectionInformationsKey);
+          }
+        }
+
+        for (anIndex = 0; i < optionsInforationsKeysLength; anIndex += 1) {
+
+          aConnectionInformationsKey = optionsInforationsKeys[anIndex];
+          if (conn[aConnectionInformationsKey]) {
+
+            optionsKeys = Object.keys(connectionInformations.options[aConnectionInformationsKey]);
+            optionsKeysLength = optionsKeys.length;
+            for (anOptionIndex = 0; anOptionIndex < optionsKeysLength; anOptionIndex += 1) {
+
+              if (conn[optionsKeys[anOptionIndex]] === undefined) {
+
+                reject('option declared but not filled');
+              }
+            }
+          }
+        }
+
+        if (selectedMenu === 0) {
+
+          toConnectionUsage = {
+            'host': conn[host],
+            'user': conn[user],
+            'password': conn[password]
+          }
+        } else if (selectedMenu === 1) {
+
+          toConnectionUsage = {
+            'socketPath': conn[socketPath],
+            'user': conn[user],
+            'password': conn[password]
+          };
+        }
+
+        if (conn[port]) {
+
+          toConnectionUsage.port = conn[port];
+        }
+        if (conn[ssl]) {
+
+          toConnectionUsage.ssl = {
+            'key': fs.readFileSync(conn[keyfile]),
+            'cert': fs.readFileSync(conn[certificate]),
+            'ca': fs.readFileSync(conn[ca])
+          };
+        }
+
+        return mysql.createConnection(toConnectionUsage);
+      }
     , connectionInformations = {
-      'menusNames': [
-        'Standard connection',
-        'Socket Connection'
-      ],
-      'menus': [
-        {
-          'host': {
-            'type': dataTypes.string,
-            'required': optionsTypes.required,
-            'label': 'Hostname'
+        'menusNames': [
+          'Standard connection',
+          'Socket Connection'
+        ],
+        'menus': [
+          {
+            'host': {
+              'type': dataTypes.string,
+              'required': optionsTypes.required,
+              'label': 'Hostname'
+            },
+            'port': {
+              'type': dataTypes.number,
+              'label': 'Port'
+            },
+            'user': {
+              'type': dataTypes.string,
+              'required': optionsTypes.required,
+              'label': 'Username'
+            },
+            'password': {
+              'type': dataTypes.password,
+              'required': optionsTypes.required,
+              'label': 'Password'
+            },
+            'ssl': {
+              'type': dataTypes.checkbox,
+              'label': 'Connect using SSL'
+            }
           },
-          'port': {
-            'type': dataTypes.number,
-            'label': 'Port'
-          },
-          'user': {
-            'type': dataTypes.string,
-            'required': optionsTypes.required,
-            'label': 'Username'
-          },
-          'password': {
-            'type': dataTypes.password,
-            'required': optionsTypes.required,
-            'label': 'Password'
-          },
+          {
+            'socketPath': {
+              'type': dataTypes.string,
+              'required': optionsTypes.required,
+              'label': 'Socket path'
+            },
+            'user': {
+              'type': dataTypes.string,
+              'required': optionsTypes.required,
+              'label': 'Username'
+            },
+            'password': {
+              'type': dataTypes.password,
+              'required': optionsTypes.required,
+              'label': 'Password'
+            },
+            'ssl': {
+              'type': dataTypes.checkbox,
+              'label': 'Connect using SSL'
+            }
+          }
+        ],
+        'options': {
           'ssl': {
-            'type': dataTypes.checkbox,
-            'label': 'Connect using SSL'
+            'keyfile': {
+              'type': dataTypes.file,
+              'required': optionsTypes.required,
+              'label': 'Key File'
+            },
+            'certificate': {
+              'type': dataTypes.file,
+              'required': optionsTypes.required,
+              'label': 'Cert File'
+            },
+            'ca': {
+              'type': dataTypes.file,
+              'required': optionsTypes.required,
+              'label': 'Ca File'
+            }
           }
         },
-        {
-          'socketPath': {
-            'type': dataTypes.string,
-            'required': optionsTypes.required,
-            'label': 'Socket path'
-          },
-          'user': {
-            'type': dataTypes.string,
-            'required': optionsTypes.required,
-            'label': 'Username'
-          },
-          'password': {
-            'type': dataTypes.password,
-            'required': optionsTypes.required,
-            'label': 'Password'
-          },
-          'ssl': {
-            'type': dataTypes.checkbox,
-            'label': 'Connect using SSL'
-          }
+        'defaults': {
+          'port': 3306
         }
-      ],
-      'options': {
-        'ssl': {
-          'keyfile': {
-            'type': dataTypes.file,
-            'required': optionsTypes.required,
-            'label': 'Key File'
-          },
-          'certificate': {
-            'type': dataTypes.file,
-            'required': optionsTypes.required,
-            'label': 'Cert File'
-          },
-          'ca': {
-            'type': dataTypes.file,
-            'required': optionsTypes.required,
-            'label': 'Ca File'
-          }
-        }
-      },
-      'defaults': {
-        'port': 3306
-      }
-    };
+      };
 
   MysqlDumper.prototype.getName = function getName() {
 
@@ -97,73 +173,20 @@
 
   MysqlDumper.prototype.testConnectionInformations = function testConnectionInformations(selectedMenu, conn) {
 
-    /*{
-      'host': '127.0.0.1',
-      'port': 3306,
-      'user': 'antani',
-      'password': 'antani',
-      'ssl': true,
+    return new Promise(function deferred(resolve, reject) {
 
-      'keyfile': '/home/antani/key.key',
-      'certificate': '/home/antani/cert.cert',
-      'ca': '/home/antani/ca.ca'
-    },
-    {
-      'socketPath': '/var/run/mysqld/socketPath.so',
-      'user': 'antani',
-      'password': 'antani',
-      'ssl': false
-    }*/
+      var connection = validateConnectionAndCreateConnection(reject, selectedMenu, conn);
+      connection.connect(function onConnection(err) {
 
-    if (!selectedMenu ||
-      !conn) {
+        if (err) {
 
-      throw 'missing connection parameters';
-    }
-
-    var selectedConnectionInformations = connectionInformations.menus[selectedMenu]
-      , menusInformationsKeys = Object.keys(selectedConnectionInformations)
-      , optionsInforationsKeys = Object.keys(connectionInformations.options)
-      , menusInformationsKeysLength = menusInformationsKeys.length
-      , optionsInforationsKeysLength = optionsInforationsKeys.length
-      , anIndex = 0
-      , optionsKeys
-      , optionsKeysLength
-      , anOptionIndex = 0
-      , aConnectionInformationsKey;
-    for (; anIndex < menusInformationsKeysLength; anIndex += 1) {
-
-      aConnectionInformationsKey = menusInformationsKeys[anIndex];
-      if (conn[aConnectionInformationsKey] === undefined) {
-
-        throw 'a required parameter is missing ' + aConnectionInformationsKey;
-      }
-    }
-
-    for (anIndex = 0; i < optionsInforationsKeysLength; anIndex += 1) {
-
-      aConnectionInformationsKey = optionsInforationsKeys[anIndex];
-      if (conn[aConnectionInformationsKey]) {
-
-        optionsKeys = Object.keys(connectionInformations.options[aConnectionInformationsKey]);
-        optionsKeysLength = optionsKeys.length;
-        for (anOptionIndex = 0; anOptionIndex < optionsKeysLength; anOptionIndex += 1) {
-
-          if (conn[optionsKeys[anOptionIndex]] === undefined) {
-
-            throw 'option declared but not filled';
-          }
+          reject('error connecting: ' + err.stack);
         }
-      }
-    }
 
-
-    var connection = mysql.createConnection({
-      host: 'localhost',
-      user: 'me',
-      password: 'secret'
+        this.destroy();
+        resolve('connected as id ' + connection.threadId);
+      });
     });
-    return true;
   };
 
   MysqlDumper.prototype.doConnect = function doConnect() {
