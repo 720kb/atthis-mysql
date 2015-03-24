@@ -191,7 +191,9 @@
 
   MysqlDumper.prototype.doConnect = function doConnect() {
 
-    return true;
+    this.connection = validateConnectionAndCreateConnection(function onError(param) {
+      throw param;
+    }, selectedMenu, conn);
   };
 
   MysqlDumper.prototype.getDumpableResources = function getDumpableResources() {
