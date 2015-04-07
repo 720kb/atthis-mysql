@@ -1,6 +1,6 @@
 {
   "name": "atthis-mysql",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "atthis mysql adapter plugin",
   "main": "index.js",
   "scripts": {
