@@ -182,10 +182,11 @@
         if (err) {
 
           reject('error connecting: ' + err.stack);
-        }
+        } else {
 
-        this.destroy();
-        resolve('connected as id ' + connection.threadId);
+          connection.destroy();
+          resolve('connected as id ' + connection.threadId);
+        }
       });
     });
   };
