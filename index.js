@@ -57,29 +57,29 @@
         if (selectedMenu === 0) {
 
           toConnectionUsage = {
-            'host': conn[host],
-            'user': conn[user],
-            'password': conn[password]
-          }
+            'host': conn['host'],
+            'user': conn['user'],
+            'password': conn['password']
+          };
         } else if (selectedMenu === 1) {
 
           toConnectionUsage = {
-            'socketPath': conn[socketPath],
-            'user': conn[user],
-            'password': conn[password]
+            'socketPath': conn['socketPath'],
+            'user': conn['user'],
+            'password': conn['password']
           };
         }
 
-        if (conn[port]) {
+        if (conn['port']) {
 
-          toConnectionUsage.port = conn[port];
+          toConnectionUsage.port = conn['port'];
         }
-        if (conn[ssl]) {
+        if (conn['ssl']) {
 
           toConnectionUsage.ssl = {
-            'key': fs.readFileSync(conn[keyfile]),
-            'cert': fs.readFileSync(conn[certificate]),
-            'ca': fs.readFileSync(conn[ca])
+            'key': fs.readFileSync(conn['keyfile']),
+            'cert': fs.readFileSync(conn['certificate']),
+            'ca': fs.readFileSync(conn['ca'])
           };
         }
 
