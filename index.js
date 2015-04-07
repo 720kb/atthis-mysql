@@ -37,7 +37,7 @@
           }
         }
 
-        for (anIndex = 0; i < optionsInforationsKeysLength; anIndex += 1) {
+        for (anIndex = 0; anIndex < optionsInforationsKeysLength; anIndex += 1) {
 
           aConnectionInformationsKey = optionsInforationsKeys[anIndex];
           if (conn[aConnectionInformationsKey]) {
