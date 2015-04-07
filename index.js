@@ -33,8 +33,7 @@
           if (selectedConnectionInformations[aConnectionInformationsKey].required === optionsTypes.required &&
             conn[aConnectionInformationsKey] === undefined) {
 
-              reject('a required parameter is missing ' + aConnectionInformationsKey);
-            }
+            reject('a required parameter is missing ' + aConnectionInformationsKey);
           }
         }
 
