@@ -9,7 +9,7 @@
     , MysqlDumper = function MysqlDumper() {
       }
     , validateConnectionAndCreateConnection = function validateConnectionAndCreateConnection(reject, selectedMenu, conn) {
-        if (!selectedMenu ||
+        if (isNaN(selectedMenu) ||
           !conn) {
 
           reject('missing connection parameters');
