@@ -30,9 +30,8 @@
         for (; anIndex < menusInformationsKeysLength; anIndex += 1) {
 
           aConnectionInformationsKey = menusInformationsKeys[anIndex];
-          if (selectedConnectionInformations[aConnectionInformationsKey]) {
-
-            if (conn[aConnectionInformationsKey] === undefined) {
+          if (selectedConnectionInformations[aConnectionInformationsKey].required === optionsTypes.required &&
+            conn[aConnectionInformationsKey] === undefined) {
 
               reject('a required parameter is missing ' + aConnectionInformationsKey);
             }
